@@ -17,7 +17,7 @@
 // Define Functions below here or use other .ino or cpp files
 //
 
-
+#include <stdlib.h> 
 #include <RF24_config.h>
 #include <printf.h>
 #include <Nrf2401.h>
@@ -107,7 +107,8 @@ bool writeToWireless(byte* addTx, char* str)
 	if (radio.write(str, strlen(str)))
 		return true;
 	return false;
-	delay(1000);
+	//delay(1000);
+	delay(rand() % 1000 + 100);
 }
 
 bool readFromWireless()

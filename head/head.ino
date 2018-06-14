@@ -146,6 +146,7 @@ bool find_Neighbors() {
 	radio.startListening();
 	delay(100);
 	while (radio.available(addressRx)) {
+		//delay(100);
 		char text[50] = "";
 		radio.read(&text, sizeof(text));
 		String newText(text);
@@ -155,10 +156,10 @@ bool find_Neighbors() {
 		{
 			String idNumber = newText.substring(strlen(message[1]), strlen(text));
 			ids[idsNum++] = idNumber;
-			//writeToSerial(idNumber);
-			//if (!handShake(idNumber)) writeToSerial("error in handShake");
+			writeToSerial(idNumber);
+			
 		}
-		//delay(2000);
+		delay(100);
 	}
 	for (int i=0;i<idsNum;i++)
 		if (!handShake(ids[i])) {
