@@ -99,6 +99,20 @@ bool writeToWireless(byte* addTx,char* str)
 	delay(1000);
 }
 
+// write string to wireless pipe
+//addTx- the address of the pipe 
+bool writeToWireless(byte* addTx, String str)
+{
+	char send_msg[100];
+	strncpy(send_msg, str.c_str(), sizeof(send_msg));
+	radio.stopListening();
+	radio.openWritingPipe(addTx);
+	if (radio.write(send_msg, strlen(send_msg)))
+		return true;
+	return false;
+	delay(1000);
+}
+
 bool readFromWireless()
 {
 
@@ -115,7 +129,7 @@ bool handShake(String idNumber)
 	writeToWireless(addressTx, send_msg);
 
 	radio.startListening();
-	delay(500);
+	delay(1000);
 	while (radio.available()) {
 		char text[50] = "";
 		radio.read(&text, sizeof(text));
@@ -156,10 +170,10 @@ bool find_Neighbors() {
 		{
 			String idNumber = newText.substring(strlen(message[1]), strlen(text));
 			ids[idsNum++] = idNumber;
-			writeToSerial(idNumber);
+			//writeToSerial(idNumber);
 			
 		}
-		delay(100);
+		delay(1000);
 	}
 	for (int i=0;i<idsNum;i++)
 		if (!handShake(ids[i])) {
@@ -188,7 +202,10 @@ bool addSon(String idNumber,String p)
 		//Serial.print("pipeNum:");
 		//Serial.println(p); 
 		myData.pipes[myData.sons_size].setaddressRx(pipeNum);
+		myData.pipes[myData.sons_size].setaddressTx(pipeNum);
+		
 		myData.sons_size++;
+		//writeToSerial(String(myData.pipes[0].getaddressRx()));
 		return true;
 		
 	}
@@ -200,17 +217,18 @@ void resSuns()
 {
 	if (myData.sons_size == 0)
 	{
-		writeToSerial(message[1] + myData.id + "no suns");
+		writeToSerial("no suns");
 	}
 	else
 	{
-		String s = message[1] + myData.id;
+		//String s = message[1] + myData.id;
+		String s;
 		for (int i = 0; i< myData.sons_size; i++) {
-			s += "_"+myData.sons[i];
+			s += myData.sons[i]+ "_";
 		}
-		char send_msg[100];
-		strncpy(send_msg, s.c_str(), sizeof(send_msg));
-		writeToSerial(send_msg);
+		///char send_msg[100];
+		//strncpy(send_msg, s.c_str(), sizeof(send_msg));
+		writeToSerial(s);
 	}
 }
 
@@ -226,9 +244,8 @@ void resPipes()
 		String s = message[1] + myData.id;
 		for (int i = 0; i< myData.sons_size; i++) {
 			s += "_" + String(myData.pipes[i].getaddressRx());
+			//Serial.println(myData.pipes[i].getaddressTx());
 		}
-		char send_msg[100];
-		strncpy(send_msg, s.c_str(), sizeof(send_msg));
-		writeToSerial(send_msg);
+		writeToSerial(s);
 	}
 }
