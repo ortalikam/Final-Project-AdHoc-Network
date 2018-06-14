@@ -39,8 +39,8 @@ char message[][50] = { "discoNeighbors", // message[0]
 char data[100] = "";
 
 struct dataStruct {
-	//String  id = "010";
-	String  id = "001";
+	String  id = "010";
+	//String  id = "001";
 	/*this data is for the final project only!! 
 	String  sons[SONSIZE]; // array of suns
 	uint64_t pipes[SONSIZE][6]; // array of pipes for sons
@@ -104,6 +104,7 @@ bool writeToWireless(byte* addTx, char* str)
 {
 	radio.stopListening();
 	radio.openWritingPipe(addTx);
+	delay(rand() % 100);
 	if (radio.write(str, strlen(str)))
 		return true;
 	return false;
