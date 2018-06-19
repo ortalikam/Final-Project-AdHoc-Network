@@ -1,11 +1,13 @@
 #pragma once
 #include <stdint.h>
+
 class pipe
 {
 private:
 	char* addressRx;
-	char*  addressTx;
+	char* addressTx;
 public:
+	
 	//c'tor
 	pipe::pipe();
 	pipe::pipe(char*  addT, char*  addR);

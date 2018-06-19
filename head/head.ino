@@ -66,6 +66,7 @@ void loop()
 
 		if (newText.substring(0, strlen(message[2])) == message[2])//start
 		{
+			//delay(500);
 			while (!find_Neighbors());
 			//find_Neighbors();
 		}
@@ -96,7 +97,16 @@ bool writeToWireless(byte* addTx,char* str)
 	if (radio.write(str, strlen(str)))
 		return true;
 	return false;
-	delay(1000);
+
+}
+
+// write string to wireless pipe
+//addTx- the address of the pipe 
+bool writeToWireless(byte* addTx, String str)
+{
+	char send_msg[100];
+	strncpy(send_msg, str.c_str(), sizeof(send_msg));
+	return writeToWireless(addTx, send_msg);
 }
 
 bool readFromWireless()
@@ -115,7 +125,7 @@ bool handShake(String idNumber)
 	writeToWireless(addressTx, send_msg);
 
 	radio.startListening();
-	delay(500);
+	delay(1000);
 	while (radio.available()) {
 		char text[50] = "";
 		radio.read(&text, sizeof(text));
@@ -135,31 +145,25 @@ bool handShake(String idNumber)
 bool find_Neighbors() {
 	String ids[SONSIZE];
 	int idsNum = 0;
-
-	//writeToSerial("find_Neighbors");
-
 	if (!writeToWireless(addressTx, message[0])) { //sending "discover Neighbors" message
 		//writeToSerial("error in sending find_Neighbors");
 		return false;
 	}
 	 
 	radio.startListening();
-	delay(100);
+	//delay(50);
 	while (radio.available(addressRx)) {
-		//delay(100);
+		delay(120);
 		char text[50] = "";
 		radio.read(&text, sizeof(text));
 		String newText(text);
-		//writeToSerial(newText);
 		String msg = newText.substring(0, strlen(message[1]));
 		if (msg == message[1]) //id_
 		{
 			String idNumber = newText.substring(strlen(message[1]), strlen(text));
-			ids[idsNum++] = idNumber;
-			writeToSerial(idNumber);
-			
+			ids[idsNum++] = idNumber;			
 		}
-		delay(100);
+		//delay(1000);
 	}
 	for (int i=0;i<idsNum;i++)
 		if (!handShake(ids[i])) {
@@ -188,7 +192,10 @@ bool addSon(String idNumber,String p)
 		//Serial.print("pipeNum:");
 		//Serial.println(p); 
 		myData.pipes[myData.sons_size].setaddressRx(pipeNum);
+		myData.pipes[myData.sons_size].setaddressTx(pipeNum);
+		
 		myData.sons_size++;
+		//writeToSerial(String(myData.pipes[0].getaddressRx()));
 		return true;
 		
 	}
@@ -200,17 +207,18 @@ void resSuns()
 {
 	if (myData.sons_size == 0)
 	{
-		writeToSerial(message[1] + myData.id + "no suns");
+		writeToSerial("no suns");
 	}
 	else
 	{
-		String s = message[1] + myData.id;
+		//String s = message[1] + myData.id;
+		String s;
 		for (int i = 0; i< myData.sons_size; i++) {
-			s += "_"+myData.sons[i];
+			s += myData.sons[i]+ "_";
 		}
-		char send_msg[100];
-		strncpy(send_msg, s.c_str(), sizeof(send_msg));
-		writeToSerial(send_msg);
+		///char send_msg[100];
+		//strncpy(send_msg, s.c_str(), sizeof(send_msg));
+		writeToSerial(s);
 	}
 }
 
@@ -226,9 +234,8 @@ void resPipes()
 		String s = message[1] + myData.id;
 		for (int i = 0; i< myData.sons_size; i++) {
 			s += "_" + String(myData.pipes[i].getaddressRx());
+			//Serial.println(myData.pipes[i].getaddressTx());
 		}
-		char send_msg[100];
-		strncpy(send_msg, s.c_str(), sizeof(send_msg));
-		writeToSerial(send_msg);
+		writeToSerial(s);
 	}
 }

@@ -39,8 +39,8 @@ char message[][50] = { "discoNeighbors", // message[0]
 char data[100] = "";
 
 struct dataStruct {
-	String  id = "010";
-	//String  id = "001";
+	//String  id = "010";
+	String  id = "001";
 	/*this data is for the final project only!! 
 	String  sons[SONSIZE]; // array of suns
 	uint64_t pipes[SONSIZE][6]; // array of pipes for sons
@@ -81,7 +81,6 @@ void loop()
 		}
 		else if (newText.substring(0, 6) == message[1] + myData.id)
 		{
-			//Serial.print("get the pipe...");
 			String msg = message[1] + myData.id + "_ackPipe";
 			char send_msg[100];
 			strncpy(send_msg, msg.c_str(), sizeof(send_msg)); 
@@ -104,12 +103,12 @@ bool writeToWireless(byte* addTx, char* str)
 {
 	radio.stopListening();
 	radio.openWritingPipe(addTx);
-	delay(rand() % 100);
+	delay(rand() % 100+10);
 	if (radio.write(str, strlen(str)))
 		return true;
 	return false;
 	//delay(1000);
-	delay(rand() % 1000 + 100);
+	//delay(rand() % 1000 + 100);
 }
 
 bool readFromWireless()
