@@ -1,9 +1,9 @@
 // Visual Micro is in vMicro>General>Tutorial Mode
 // 
 /*
-    Name:       head.ino
-    Created:	04/06/2018 20:55:47
-    Author:     DELL\ortal
+Name:       head.ino
+Created:	04/06/2018 20:55:47
+Author:     DELL\ortal
 */
 
 // Define User Types below here or use a .h file
@@ -26,21 +26,21 @@ byte addressRx[6] = { 'A','B','C','D','E' };
 byte addressTx[6] = { 'E','D','C','B','A' };
 
 //An array of messages that pass through the network
-char* message[50]= { "discoNeighbors", // message[0]
-					 "Id_", //message[1]
-					 "start", //message[2]
-					 "reqSons" , //message[3]
-					 "reqPipes"}; //message[4]			
+char* message[50] = { "discoNeighbors", // message[0]
+"Id_", //message[1]
+"start", //message[2]
+"reqSons" , //message[3]
+"reqPipes" }; //message[4]			
 
-//Buffer for receiving data
+			  //Buffer for receiving data
 char data[100] = "";
 
 
-struct dataStruct { 
-	String id = "000"; 
+struct dataStruct {
+	String id = "000";
 	String sons[SONSIZE]; // array of suns
 	pipe* pipes[SONSIZE]; // array of pipes for sons
-	int sons_size=0; //how much sons exists
+	int sons_size = 0; //how much sons exists
 }myData;
 
 
@@ -58,7 +58,7 @@ void setup()
 // Add the main program code into the continuous loop() function
 void loop()
 {
-	delay(500);
+	delay(50);
 	while (Serial.available()) {
 		Serial.readBytes(data, sizeof(data));
 
@@ -83,7 +83,7 @@ void loop()
 
 }//loop
 
-// write string to serial port
+ // write string to serial port
 void writeToSerial(String str)
 {
 	Serial.println(str);
@@ -91,7 +91,7 @@ void writeToSerial(String str)
 
 // write string to wireless pipe
 //addTx- the address of the pipe 
-bool writeToWireless(byte* addTx,char* str)
+bool writeToWireless(byte* addTx, char* str)
 {
 	radio.stopListening();
 	radio.openWritingPipe(addTx);
@@ -110,19 +110,7 @@ bool writeToWireless(byte* addTx, String str)
 	return writeToWireless(addTx, send_msg);
 }
 
-// write string to wireless pipe
-//addTx- the address of the pipe 
-bool writeToWireless(byte* addTx, String str)
-{
-	char send_msg[100];
-	strncpy(send_msg, str.c_str(), sizeof(send_msg));
-	radio.stopListening();
-	radio.openWritingPipe(addTx);
-	if (radio.write(send_msg, strlen(send_msg)))
-		return true;
-	return false;
-	delay(1000);
-}
+
 
 bool readFromWireless()
 {
@@ -134,7 +122,7 @@ bool handShake(String idNumber)
 	//Serial.print("handShake..");
 	//delay(1000);
 	String pipeNumber = idNumber + idNumber.substring(0, 2);
-	String msg= message[1]+idNumber+"_"+ pipeNumber;
+	String msg = message[1] + idNumber + "_" + pipeNumber;
 	char send_msg[100];
 	strncpy(send_msg, msg.c_str(), sizeof(send_msg));
 	writeToWireless(addressTx, send_msg);
@@ -150,7 +138,7 @@ bool handShake(String idNumber)
 		{
 			return addSon(idNumber, pipeNumber);
 		}
-			
+
 
 
 	}
@@ -164,7 +152,7 @@ bool find_Neighbors() {
 		//writeToSerial("error in sending find_Neighbors");
 		return false;
 	}
-	 
+
 	radio.startListening();
 	delay(50);
 	while (radio.available(addressRx)) {
@@ -176,13 +164,13 @@ bool find_Neighbors() {
 		if (msg == message[1]) //id_
 		{
 			String idNumber = newText.substring(strlen(message[1]), strlen(text));
-			ids[idsNum++] = idNumber;	
+			ids[idsNum++] = idNumber;
 			//writeToSerial("id:"+ idNumber);
 		}
-		delay(1000);
+		//delay(100);
 	}
 	//if (idsNum==0) return false;
-	for (int i=0;i<idsNum;i++)
+	for (int i = 0; i<idsNum; i++)
 		if (!handShake(ids[i])) {
 			writeToSerial("error in handShake");
 			return false;
@@ -194,10 +182,10 @@ bool find_Neighbors() {
 
 
 // add son with idNumber to the array of sons id exist place in the array
-bool addSon(String idNumber,String p)
+bool addSon(String idNumber, String p)
 {
 	//Serial.print("addson...");
-	if(myData.sons_size <SONSIZE) {
+	if (myData.sons_size <SONSIZE) {
 		for (int i = 0; i < SONSIZE; i++)
 		{
 			if (myData.sons[i] == idNumber) //son already exists
@@ -211,11 +199,11 @@ bool addSon(String idNumber,String p)
 		myData.pipes[myData.sons_size] = new pipe();
 		myData.pipes[myData.sons_size]->setaddressRx(pipeNum);
 		myData.pipes[myData.sons_size]->setaddressTx(pipeNum);
-		
+
 		myData.sons_size++;
 		//writeToSerial(String(myData.pipes[0].getaddressRx()));
 		return true;
-		
+
 	}
 	return false;
 }
@@ -232,7 +220,7 @@ void resSuns()
 		//String s = message[1] + myData.id;
 		String s;
 		for (int i = 0; i< myData.sons_size; i++) {
-			s += myData.sons[i]+ "_";
+			s += myData.sons[i] + "_";
 		}
 		///char send_msg[100];
 		//strncpy(send_msg, s.c_str(), sizeof(send_msg));
@@ -249,7 +237,7 @@ void resPipes()
 	}
 	else
 	{
-		String s="";// = message[1] + myData.id;
+		String s = "";// = message[1] + myData.id;
 		for (int i = 0; i< myData.sons_size; i++) {
 			s += String(myData.pipes[i]->getaddressTx()) + "_";
 		}
