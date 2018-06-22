@@ -39,7 +39,7 @@ char data[100] = "";
 struct dataStruct { 
 	String id = "000"; 
 	String sons[SONSIZE]; // array of suns
-	pipe pipes[SONSIZE]; // array of pipes for sons
+	pipe* pipes[SONSIZE]; // array of pipes for sons
 	int sons_size=0; //how much sons exists
 }myData;
 
@@ -58,6 +58,7 @@ void setup()
 // Add the main program code into the continuous loop() function
 void loop()
 {
+	delay(500);
 	while (Serial.available()) {
 		Serial.readBytes(data, sizeof(data));
 
@@ -66,9 +67,9 @@ void loop()
 
 		if (newText.substring(0, strlen(message[2])) == message[2])//start
 		{
-			//delay(500);
+			writeToSerial("Starting...");
 			while (!find_Neighbors());
-			//find_Neighbors();
+			//writeToSerial("found...");
 		}
 		else if (newText.substring(0, strlen(message[3])) == message[3]) { //reqsun
 			resSuns();
@@ -151,7 +152,7 @@ bool find_Neighbors() {
 	}
 	 
 	radio.startListening();
-	//delay(50);
+	delay(50);
 	while (radio.available(addressRx)) {
 		delay(120);
 		char text[50] = "";
@@ -161,10 +162,12 @@ bool find_Neighbors() {
 		if (msg == message[1]) //id_
 		{
 			String idNumber = newText.substring(strlen(message[1]), strlen(text));
-			ids[idsNum++] = idNumber;			
+			ids[idsNum++] = idNumber;	
+			//writeToSerial("id:"+ idNumber);
 		}
 		//delay(1000);
 	}
+	//if (idsNum==0) return false;
 	for (int i=0;i<idsNum;i++)
 		if (!handShake(ids[i])) {
 			writeToSerial("error in handShake");
@@ -187,12 +190,13 @@ bool addSon(String idNumber,String p)
 				return true;
 		}
 		myData.sons[myData.sons_size] = idNumber;
-		char pipeNum[100];
+		char pipeNum[6];
 		strncpy(pipeNum, p.c_str(), sizeof(pipeNum));
 		//Serial.print("pipeNum:");
 		//Serial.println(p); 
-		myData.pipes[myData.sons_size].setaddressRx(pipeNum);
-		myData.pipes[myData.sons_size].setaddressTx(pipeNum);
+		myData.pipes[myData.sons_size] = new pipe();
+		myData.pipes[myData.sons_size]->setaddressRx(pipeNum);
+		myData.pipes[myData.sons_size]->setaddressTx(pipeNum);
 		
 		myData.sons_size++;
 		//writeToSerial(String(myData.pipes[0].getaddressRx()));
@@ -231,10 +235,10 @@ void resPipes()
 	}
 	else
 	{
-		String s = message[1] + myData.id;
+		String s="";// = message[1] + myData.id;
 		for (int i = 0; i< myData.sons_size; i++) {
-			s += "_" + String(myData.pipes[i].getaddressRx());
-			//Serial.println(myData.pipes[i].getaddressTx());
+			s += String(myData.pipes[i]->getaddressTx()) + "_";
+			//Serial.println(String(myData.pipes[i]->getaddressTx()));
 		}
 		writeToSerial(s);
 	}

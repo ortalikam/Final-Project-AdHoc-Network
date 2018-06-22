@@ -39,8 +39,8 @@ char message[][50] = { "discoNeighbors", // message[0]
 char data[100] = "";
 
 struct dataStruct {
-	//String  id = "010";
-	String  id = "001";
+	String  id = "010";
+	//String  id = "001";
 	/*this data is for the final project only!! 
 	String  sons[SONSIZE]; // array of suns
 	uint64_t pipes[SONSIZE][6]; // array of pipes for sons
@@ -57,7 +57,7 @@ void setup()
 	radio.begin();
 	radio.openReadingPipe(0, addressRx); //rec
 	radio.setPALevel(RF24_PA_MIN);
-	Serial.println("hi");
+	//Serial.println("hi");
 
 }
 
@@ -77,6 +77,7 @@ void loop()
 			char send_msg[100];
 			strncpy(send_msg, msg.c_str(), sizeof(send_msg));
 			writeToWireless(addressTx, send_msg); //send "id_"+idNumber
+			//Serial.println("sent id...");
 			
 		}
 		else if (newText.substring(0, 6) == message[1] + myData.id)
