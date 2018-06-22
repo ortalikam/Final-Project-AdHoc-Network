@@ -37,10 +37,17 @@ def apply():
 
 def Viewing_network():
     reqSons()
+<<<<<<< HEAD
     #top = Toplevel()
     #top.title("Viewing network mode")
     #top.geometry("600x600")
     #top.mainloop()
+=======
+    top = Toplevel()
+    top.title("Viewing network mode")
+    top.geometry("600x600")
+    top.mainloop()
+>>>>>>> 9342dc5c904d292e1c3cf219ab511b99cf11b8a2
     
 
 def Send_message():

@@ -289,6 +289,11 @@ vmresolved.compiler.path=C:\Program Files (x86)\Arduino\hardware\tools\avr\bin\
 vmresolved.tools.path=C:\Program Files (x86)\Arduino\hardware\tools\avr
 build.variant.vmresolved.name=mega
 build.variant.vmresolved.full_path=C:\Program Files (x86)\Arduino\hardware\arduino\avr\variants\mega
+build.project_name=head.ino
+build.project_path=C:\Users\Yuval\Documents\Arduino\Final-Project-AdHoc-Network\head
+sketch_path=C:\Users\Yuval\Documents\Arduino\Final-Project-AdHoc-Network\head
+ProjectDir=C:\Users\Yuval\Documents\Arduino\Final-Project-AdHoc-Network\head\
+build.path=C:\Users\Yuval\AppData\Local\Temp\VMBuilds\head\mega_atmega2560\Debug
 vm.runtime.compiler.cached_cores_path=C:\Users\Yuval\AppData\Local\Temp\VMBCore\arduino16x
 vm.runtime.compiler.showwarnings=false
 vm.runtime.compiler.showwarnings_core=false
@@ -299,8 +304,13 @@ vm.runtime.compiler.auto_discover_includes=true
 serial.port.file=COM11
 serial.port=COM11
 serial.port.num=11
+<<<<<<< HEAD
 extra.time.local=1529671960
 extra.time.utc=1529661160
+=======
+extra.time.local=1528996329
+extra.time.utc=1528985529
+>>>>>>> 9342dc5c904d292e1c3cf219ab511b99cf11b8a2
 extra.time.dst=10800
 extra.time.zone=-10800
 serial.port.caption=COM11 - Arduino Mega 2560
@@ -328,11 +338,6 @@ serial.vidpid=23410042
 serial.vid_pid=0x2341_0x0042
 serial.iserial=85633323530351A0A180
 serial.port.iserial=85633323530351A0A180
-build.project_name=head.ino
-build.project_path=C:\Users\Yuval\Documents\Arduino\Final-Project-AdHoc-Network\head
-sketch_path=C:\Users\Yuval\Documents\Arduino\Final-Project-AdHoc-Network\head
-ProjectDir=C:\Users\Yuval\Documents\Arduino\Final-Project-AdHoc-Network\head\
-build.path=C:\Users\Yuval\AppData\Local\Temp\VMBuilds\head\mega_atmega2560\Debug
 vm.runtime.compile.skip_library_file_if_exists_in_project=false
 vm.runtime.compiler.auto_discover_includes_cache=true
 vm.runtime.build.final_output_path=C:\Users\Yuval\Documents\Arduino\Final-Project-AdHoc-Network\head\Debug\
@@ -347,6 +352,7 @@ PreProcessor.HeaderCount=1
 PreProcessor.PrototypeCount=13
 vm.last.preproc.file.0.file=head.ino
 vm.last.preproc.file.0.offset=1
+<<<<<<< HEAD
 vm.last.preproc.file.0.length=5738
 vm.last.preproc.file.0.linecount=246
 vm.last.preproc.file.0.linestart=0
@@ -358,13 +364,31 @@ vm.last.preproc.file.1.length=902
 vm.last.preproc.file.1.linecount=40
 vm.last.preproc.file.1.linestart=246
 vm.last.preproc.file.1.lineend=286
+=======
+vm.last.preproc.file.0.length=5772
+vm.last.preproc.file.0.linecount=252
+vm.last.preproc.file.0.linestart=0
+vm.last.preproc.file.0.lineend=252
+vm.last.preproc.file.0.prefix_lines=0
+vm.last.preproc.file.1.file=pipe.cpp
+vm.last.preproc.file.1.offset=0
+vm.last.preproc.file.1.length=469
+vm.last.preproc.file.1.linecount=19
+vm.last.preproc.file.1.linestart=252
+vm.last.preproc.file.1.lineend=271
+>>>>>>> 9342dc5c904d292e1c3cf219ab511b99cf11b8a2
 vm.last.preproc.file.1.prefix_lines=0
 vm.last.preproc.file.2.file=pipe.h
 vm.last.preproc.file.2.offset=0
 vm.last.preproc.file.2.length=330
 vm.last.preproc.file.2.linecount=22
+<<<<<<< HEAD
 vm.last.preproc.file.2.linestart=286
 vm.last.preproc.file.2.lineend=308
+=======
+vm.last.preproc.file.2.linestart=271
+vm.last.preproc.file.2.lineend=293
+>>>>>>> 9342dc5c904d292e1c3cf219ab511b99cf11b8a2
 vm.last.preproc.file.2.prefix_lines=0
 vm.sketch_source_path=C:\Users\Yuval\AppData\Local\Temp\VMBuilds\head\mega_atmega2560\Debug
 vm.build_use_temp=1

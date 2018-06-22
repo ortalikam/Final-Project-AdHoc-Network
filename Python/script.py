@@ -1,6 +1,10 @@
 import serial
 import time
+<<<<<<< HEAD
 
+=======
+import igraph as ig
+>>>>>>> 9342dc5c904d292e1c3cf219ab511b99cf11b8a2
 
 ArduinoSerial = serial.Serial('com11',9600)
 ArduinoSerial.flushInput()
