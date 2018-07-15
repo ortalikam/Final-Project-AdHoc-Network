@@ -84,7 +84,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="pipe.h" />
     <ClInclude Include="__vm\.node.vsarduino.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pipe.cpp" />
   </ItemGroup>
   <PropertyGroup>
     <DebuggerFlavor>VisualMicroDebugger</DebuggerFlavor>
@@ -94,7 +98,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties arduino.upload.port="COM8" />
+      <UserProperties arduino.upload.port="COM9" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

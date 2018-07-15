@@ -68,8 +68,8 @@ void loop()
 		if (newText.substring(0, strlen(message[2])) == message[2])//start
 		{
 			writeToSerial("Starting...");
-			while (!find_Neighbors());
-			//writeToSerial("found...");
+			find_Neighbors();
+			//while (!find_Neighbors());
 		}
 		else if (newText.substring(0, strlen(message[3])) == message[3]) { //reqsun
 			resSuns();
@@ -119,63 +119,63 @@ bool readFromWireless()
 
 bool handShake(String idNumber)
 {
-	//Serial.print("handShake..");
-	//delay(1000);
 	String pipeNumber = idNumber + idNumber.substring(0, 2);
-	String msg = message[1] + idNumber + "_" + pipeNumber;
+	String msg = message[1] + idNumber + "_"+myData.id+"_" + pipeNumber;
 	char send_msg[100];
 	strncpy(send_msg, msg.c_str(), sizeof(send_msg));
 	writeToWireless(addressTx, send_msg);
 
 	radio.startListening();
-	delay(1000);
-	while (radio.available()) {
+	delay(200);
+	if (radio.available(addressRx)) {
+		//delay(120);
 		char text[50] = "";
 		radio.read(&text, sizeof(text));
 		String msg(text);
-		//String msg = newText.substring(0, strlen(message[1]))+idNumber;
 		if (msg == (message[1] + idNumber + "_ackPipe"))
 		{
-			return addSon(idNumber, pipeNumber);
+			 addSon(idNumber, pipeNumber);
+			 return;
 		}
-
-
-
 	}
+	else writeToSerial("didnt get ack for pipe");
 }
 
 //sending "discover Neighbors" message and wait for replay and update suns accordance
 bool find_Neighbors() {
 	String ids[SONSIZE];
 	int idsNum = 0;
-	if (!writeToWireless(addressTx, message[0])) { //sending "discover Neighbors" message
-		//writeToSerial("error in sending find_Neighbors");
-		return false;
-	}
+	writeToWireless(addressTx, message[0]);
+	//if (!writeToWireless(addressTx, message[0])) { //sending "discover Neighbors" message
+	//	writeToSerial("nobody found");
+	//	return;
+	//}
 
 	radio.startListening();
-	delay(50);
+
+
+	delay(150);
 	while (radio.available(addressRx)) {
-		delay(120);
 		char text[50] = "";
 		radio.read(&text, sizeof(text));
 		String newText(text);
 		String msg = newText.substring(0, strlen(message[1]));
 		if (msg == message[1]) //id_
 		{
-			String idNumber = newText.substring(strlen(message[1]), strlen(text));
+			String idNumber = newText.substring(3, 6);
 			ids[idsNum++] = idNumber;
 			//writeToSerial("id:"+ idNumber);
 		}
-		//delay(100);
+		delay(150);
 	}
-	//if (idsNum==0) return false;
-	for (int i = 0; i<idsNum; i++)
-		if (!handShake(ids[i])) {
-			writeToSerial("error in handShake");
-			return false;
-		}
-	return true;
+	if (idsNum==0) writeToSerial("found buy not send id num");
+	for (int i = 0; i < idsNum; i++)
+		handShake(ids[i]);
+		//if (!handShake(ids[i])) {
+		//	writeToSerial("error in handShake");
+		//	//return false;
+		//}
+	//return true;
 
 }
 
@@ -184,28 +184,34 @@ bool find_Neighbors() {
 // add son with idNumber to the array of sons id exist place in the array
 bool addSon(String idNumber, String p)
 {
-	//Serial.print("addson...");
+
 	if (myData.sons_size <SONSIZE) {
 		for (int i = 0; i < SONSIZE; i++)
 		{
 			if (myData.sons[i] == idNumber) //son already exists
-				return true;
+				return;
 		}
 		myData.sons[myData.sons_size] = idNumber;
 		char pipeNum[6];
 		strncpy(pipeNum, p.c_str(), sizeof(pipeNum));
-		//Serial.print("pipeNum:");
-		//Serial.println(p); 
+
 		myData.pipes[myData.sons_size] = new pipe();
 		myData.pipes[myData.sons_size]->setaddressRx(pipeNum);
-		myData.pipes[myData.sons_size]->setaddressTx(pipeNum);
-
+		myData.pipes[myData.sons_size]->setaddressTx(pipeNum);		
 		myData.sons_size++;
-		//writeToSerial(String(myData.pipes[0].getaddressRx()));
-		return true;
+
+		openPipe(pipeNum);
 
 	}
-	return false;
+	else writeToSerial("no place in sons");
+}
+
+void openPipe(char *p)
+{
+	byte pNum[6];
+	for (int i = 0; i < 5; i++)
+		pNum[i] = p[i];
+	radio.openReadingPipe(0, pNum); //rec
 }
 
 //write to the serial port the susns array 

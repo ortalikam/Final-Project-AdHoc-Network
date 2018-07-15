@@ -16,7 +16,7 @@
 
 // Define Functions below here or use other .ino or cpp files
 //
-
+#include "pipe.h"
 #include <stdlib.h> 
 #include <RF24_config.h>
 #include <printf.h>
@@ -25,6 +25,8 @@
 #include <nRF24L01.h>
 #include <RF24.h>
 #define SONSIZE 10
+#define FATHERSIZE 10
+#define MAXMSG 5
 RF24 radio(7, 8); // CE, CSN
 byte addressTx[6] = { 'A','B','C','D','E' };
 byte addressRx[6] = { 'E','D','C','B','A' };
@@ -33,18 +35,26 @@ byte addressRx[6] = { 'E','D','C','B','A' };
 //An array of messages that pass through the network
 char message[][50] = { "discoNeighbors", // message[0]
 					   "Id_", // message[1]
-						"reqSons" }; // message[2]
+					   "reqSons", // message[2]
+					   "msg_"}; // message[3]
 
 //Buffer for receiving data
 char data[100] = "";
 
 struct dataStruct {
-	String  id = "010";
-	//String  id = "001";
+	//String  id = "010";
+	String  id = "001";
+
+	String fathers[FATHERSIZE]; // array of suns
+	pipe* fathersPipes[FATHERSIZE]; // array of pipes for sons
+	int fathers_size = 0; //how much sons exists
+
+	String msg[MAXMSG];
+	int msgs_size = 0; //how much msgs exists
 	/*this data is for the final project only!! 
-	String  sons[SONSIZE]; // array of suns
-	uint64_t pipes[SONSIZE][6]; // array of pipes for sons
-	int sons_size = 0; //how much suns exists
+	String sons[SONSIZE]; // array of suns
+	pipe* pipes[SONSIZE]; // array of pipes for sons
+	int sons_size = 0; //how much sons exists
 	*/
 }myData;
 
@@ -77,16 +87,24 @@ void loop()
 			char send_msg[100];
 			strncpy(send_msg, msg.c_str(), sizeof(send_msg));
 			writeToWireless(addressTx, send_msg); //send "id_"+idNumber
-			//Serial.println("sent id...");
+			Serial.println("sent id...");
 			
 		}
-		else if (newText.substring(0, 6) == message[1] + myData.id)
+		else if (newText.substring(0, 6) == message[1] + myData.id) //get id+myId
 		{
+			
 			String msg = message[1] + myData.id + "_ackPipe";
-			char send_msg[100];
-			strncpy(send_msg, msg.c_str(), sizeof(send_msg)); 
-			writeToWireless(addressTx, send_msg);
+			writeToWireless(addressTx, msg);
+			writeToSerial("ack");
+			//addFather(newText.substring(7, 10), newText.substring(11, 16));
+
 		}
+		else if (newText.substring(0, 4) == message[3]) //get msg
+		{
+
+		}
+		else Serial.println("ather:"+newText);
+
 
 	}
 } //loop
@@ -112,9 +130,51 @@ bool writeToWireless(byte* addTx, char* str)
 	//delay(rand() % 1000 + 100);
 }
 
+bool writeToWireless(byte* addTx, String str)
+{
+	char send_msg[100];
+	strncpy(send_msg, str.c_str(), sizeof(send_msg));
+	return writeToWireless(addTx, send_msg);
+}
+
 bool readFromWireless()
 {
 
+}
+
+// add father with idNumber to the array of sons id exist place in the array
+bool addFather(String idNumber, String p)
+{
+	//writeToSerial("pipe" + p);
+	if (myData.fathers_size <FATHERSIZE) {
+		for (int i = 0; i < FATHERSIZE; i++)
+		{
+			if (myData.fathers[i] == idNumber) //son already exists
+				return true;
+		}
+		myData.fathers[myData.fathers_size] = idNumber;
+		char pipeNum[6];
+		strncpy(pipeNum, p.c_str(), sizeof(pipeNum));
+		//Serial.println(pipeNum);
+		myData.fathersPipes[myData.fathers_size] = new pipe();
+		myData.fathersPipes[myData.fathers_size]->setaddressRx(pipeNum);
+		myData.fathersPipes[myData.fathers_size]->setaddressTx(pipeNum);
+
+		myData.fathers_size++;
+
+		openPipe(pipeNum);
+
+		return true;
+	}
+	return false;
+}
+
+void openPipe(char *p)
+{
+	byte pNum[6];
+	for (int i = 0; i < 5; i++)
+		pNum[i] = p[i];
+	radio.openReadingPipe(0, pNum); //rec
 }
 
 /* this functions is for the final project only!!

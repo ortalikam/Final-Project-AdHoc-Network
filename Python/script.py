@@ -6,7 +6,7 @@ ArduinoSerial.flushInput()
 ArduinoSerial.timeout=2
 time.sleep(2)
 
-menu=['Please Enter your choice:','1. Build the Network','2 .Bring Sons Araay', '3. Bring Pipes Araay','4. Send Message to Sons']
+menu=['Please Enter your choice:','1. Build the Network','2 .Bring Sons Araay', '3. Bring Pipes Araay','4. Send Message to Sons','5. Reset Port','6. Colse Port','7. Open Port']
 sons=[]
 
 
@@ -42,8 +42,19 @@ while 1:
                 print 'Please Enter Message to send:'
                 inpt = raw_input()
                 ArduinoSerial.write('sendMessage_'+inpt)
-                                
-            
+        elif var=='5':
+            ArduinoSerial.close()                
+            ArduinoSerial = serial.Serial('com11',9600)
+            ArduinoSerial.flushInput()
+            ArduinoSerial.timeout=2
+            time.sleep(2)
+        elif var=='6':
+            ArduinoSerial.close()
+        elif var=='7':
+            ArduinoSerial = serial.Serial('com11',9600)
+            ArduinoSerial.flushInput()
+            ArduinoSerial.timeout=2
+            time.sleep(2)
         else: print 'Non Valid Choice'
        
     except:
